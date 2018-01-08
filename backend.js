@@ -25,9 +25,9 @@ const URL_CHALLENGE_TWO = 'https://backend-challenge-summer-2018.herokuapp.com/c
 
 let promiseList = []
 // Assuming there is five pages maximum as mentioned in the challenge requirement.
-for(let i = 1; i <= 5; i++) {
+for(let pageNumber = 1; pageNumber <= 5; pageNumber++) {
 	// Change the url constant here to run challenge 1 or 2.
-	promiseList.push(axios.get(URL_CHALLENGE_TWO + i))
+	promiseList.push(axios.get(URL_CHALLENGE_TWO + pageNumber))
 }
 
 let result = [{}]
@@ -36,6 +36,7 @@ axios.all(promiseList)
         for (let i = 0; i < args.length; i++) {
             result = result.concat(args[i].data.menus)
         }
+        console.log(result)
     }))
     .then((res) => {
 
@@ -48,11 +49,11 @@ axios.all(promiseList)
     			visited[id] = true
     			dfsNodeDict[id] = true
     			for(let i = 0; i < data[id].child_ids.length; i++) {
-    				if(!visited[data[id].child_ids[i]] && findCycles(data[id].child_ids[i], data)) {
+    				let childContainsCycle = !visited[data[id].child_ids[i]] && findCycles(data[id].child_ids[i], data)
+    				let formsCycle = !!dfsNodeDict[data[id].child_ids[i]]
+    				if(childContainsCycle || formsCycle) {
     					return true
-    				} else if(dfsNodeDict[data[id].child_ids[i]]) {
-    					return true
-    				}
+    				} 
     			}
     		}
     		dfsNodeDict[id] = false
@@ -68,6 +69,7 @@ axios.all(promiseList)
 			resultSummary[insertKey].push(result[i])
     		dfsNodeDict = {}
 		}
-		console.log(JSON.stringify(resultSummary))
+
+		console.log(resultSummary)
 		
     });
