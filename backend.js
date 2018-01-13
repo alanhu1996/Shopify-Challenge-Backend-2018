@@ -36,7 +36,6 @@ axios.all(promiseList)
         for (let i = 0; i < args.length; i++) {
             result = result.concat(args[i].data.menus)
         }
-        console.log(result)
     }))
     .then((res) => {
 
