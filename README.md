@@ -1,4 +1,6 @@
-# Shopify-Challenge-Backend-2018 (The solution here differs from the file I submitted through the shopify website because I realized I misread the output requirement. For the solution in the website, I only output the immediate children of the root menus in the child_id key. In this solution, the child_id key of each menu in the output will contain all the children of the menu's root id.)
+# Shopify-Challenge-Backend-2018 
+NOTE *** The solution here differs from the file I submitted through the shopify website because I realized I misread the output requirement. 
+For the solution in the website, I only output the immediate children of the root menus in the child_id key. In this solution, the child_id key of each menu in the output will contain all the children of the menu's root id.
 
 1. Run 'npm install' to install axios.
 2. Run 'node backend.js' to execute the backend challenge script.
