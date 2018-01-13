@@ -24,7 +24,7 @@ const URL_CHALLENGE_TWO = 'https://backend-challenge-summer-2018.herokuapp.com/c
 
 
 let promiseList = []
-// Assuming there is five pages maximum as mentioned in the challenge requirement.
+// Assuming there are five pages maximum as mentioned in the challenge requirement.
 for(let pageNumber = 1; pageNumber <= 5; pageNumber++) {
 	// Change the url constant here to run challenge 1 or 2.
 	promiseList.push(axios.get(URL_CHALLENGE_TWO + pageNumber))
