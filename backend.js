@@ -1,7 +1,7 @@
 // Output for challenge id = 1:
 // {"valid_menus":[
-// 	{"id":2,"data":"Company","child_ids":[4,5,8]},
-// 	{"id":9,"data":"Computer","child_ids":[10,11,12]}],
+// 	{"id":2,"data":"Company","child_ids":[4,6,5,8]},
+// 	{"id":9,"data":"Computer","child_ids":[10,11,13,14,12]}],
 // "invalid_menus":[
 // 	{"id":1,"data":"House","child_ids":[3]}
 // 	]
@@ -9,11 +9,11 @@
 
 // Output for challenge id = 2:
 // {"valid_menus":[
-// 	{"id":2,"data":"Company","child_ids":[8,9,11]},
-// 	{"id":12,"data":"Computer","child_ids":[13,14,15]},
+// 	{"id":2,"data":"Company","child_ids":[8,10,9,11]},
+// 	{"id":12,"data":"Computer","child_ids":[13,14,16,17,21,15]},
 // 	{"id":19,"data":"Table","parent_id":4,"child_ids":[]}],
 // "invalid_menus":[
-// 	{"id":1,"data":"House","child_ids":[3,4]}
+// 	{"id":1,"data":"House","child_ids":[5,18,3,6,1,20,7,4]}
 // 	]
 // }
 
@@ -36,7 +36,7 @@ axios.all(promiseList)
         for (let i = 0; i < args.length; i++) {
             result = result.concat(args[i].data.menus)
         }
-        console.log(result)
+
     }))
     .then((res) => {
 
@@ -44,20 +44,20 @@ axios.all(promiseList)
     	let dfsNodeDict = {}
     	// Finding cycles using a dfs search. We keep track of the nodes visited in the current recursive stack. If a node gets visited twice in the 
     	// same recursion stack, that means a cycle exists.
-    	let findCycles = (id, data) => {
+    	let findCycles = (id, data, totalChildren = []) => {
     		if(!visited[id]) {
     			visited[id] = true
     			dfsNodeDict[id] = true
     			for(let i = 0; i < data[id].child_ids.length; i++) {
-    				let childContainsCycle = !visited[data[id].child_ids[i]] && findCycles(data[id].child_ids[i], data)
+    				let childContainsCycle = !visited[data[id].child_ids[i]] && findCycles(data[id].child_ids[i], data, totalChildren).isCycle
     				let formsCycle = !!dfsNodeDict[data[id].child_ids[i]]
-    				if(childContainsCycle || formsCycle) {
-    					return true
-    				} 
+                    totalChildren.push(data[id].child_ids[i])
+    				if(childContainsCycle || formsCycle) return {isCycle: true, children: totalChildren}
+    				
     			}
     		}
     		dfsNodeDict[id] = false
-    		return false
+    		return {isCycle: false, children: totalChildren}
 		}
 		let resultSummary = {
 			valid_menus:[], 
@@ -65,11 +65,12 @@ axios.all(promiseList)
 		}
 		for(let i = 1; i < result.length; i++) {
 			if(visited[i]) continue
-			let insertKey = !findCycles(i, result) ? 'valid_menus' : 'invalid_menus'
-			resultSummary[insertKey].push(result[i])
+            let findCycleResult = findCycles(i, result)
+			let insertKey = !findCycleResult.isCycle ? 'valid_menus' : 'invalid_menus'
+			resultSummary[insertKey].push({id: result[i].id, data: result[i].data, child_ids: findCycleResult.children})
     		dfsNodeDict = {}
 		}
 
-		console.log(resultSummary)
+		console.log(JSON.stringify(resultSummary))
 		
     });
